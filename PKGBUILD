@@ -26,8 +26,10 @@ build()
     fi
     
     msg "GIT checkout done."
-    cp $srcdir/$pkgname/src/$pkgname "$pkgdir/usr/bin/"
-
+   cd "$srcdir/$pkgname"
+ 
+  make
+  make DESTDIR="$pkgdir/" install
 }
 package() {
 make 
