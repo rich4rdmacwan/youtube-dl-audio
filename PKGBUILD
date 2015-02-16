@@ -10,7 +10,7 @@ depends=('bash')
 makedepends=(git)
 _gitroot="https://code.google.com/p/youtube-dl-audio/"
 _gitname="youtube-dl-audio"
-
+md5sums=()
 build()
 {
     cd ${srcdir}/
@@ -21,12 +21,15 @@ build()
         git pull origin
         msg "The local files are updated..."
     else
+    msg "Cloning ..."
         git clone ${_gitroot}
     fi
     
     msg "GIT checkout done."
-    make
+    cp $srcdir/$pkgname/src/$pkgname "$pkgdir/usr/bin/"
+
 }
 package() {
- install -d "${srcdir}"/usr/bin/${$pkgname}
+make 
+#install -Dm644 $srcdir/$pkgname/src/$pkgname "$pkgdir/usr/bin/"
 }
