@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ "$#" -ne 1 ]; then
+    echo -e "\e[31mERROR :  The url to the youtube video is required"
+    exit 1
+fi
 i=0
 downloadtoken=0
 IFS_BAK=$IFS
