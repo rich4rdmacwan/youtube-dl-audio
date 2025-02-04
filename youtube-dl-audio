@@ -7,7 +7,7 @@ i=0
 downloadtoken=0
 IFS_BAK=$IFS
 IFS=$'\n'
-tarray=$(youtube-dl -F $1 |grep "audio only" | cut -c1-3,10-18,45-50)
+tarray=$(yt-dlp_linux -F $1 |grep "audio only" | cut -c1-3,10-18,45-50)
 for line in $tarray; do
  i=$((i+1))
  if [ $(( $i % 2 )) -eq 0 ]; then
@@ -33,4 +33,4 @@ if [[ $option ]]; then
 fi
 
 echo -e "Downloading selected version : \e[104m$downloadtoken\e[0m" 
-youtube-dl -f $downloadtoken $1
+yt-dlp_linux -f $downloadtoken $1
