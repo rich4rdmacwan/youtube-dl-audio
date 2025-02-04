@@ -7,7 +7,7 @@ i=0
 downloadtoken=0
 IFS_BAK=$IFS
 IFS=$'\n'
-tarray=$(youtube-dl -F $1 |grep "audio only" | cut -c1-3,12-18,45-50)
+tarray=$(youtube-dl -F $1 |grep "audio only" | cut -c1-3,10-18,45-50)
 for line in $tarray; do
  i=$((i+1))
  if [ $(( $i % 2 )) -eq 0 ]; then
