@@ -1,22 +1,44 @@
 #!/bin/bash
 if [ "$#" -ne 1 ]; then
-    echo -e "\e[31mERROR :  The url to the youtube video is required"
-    exit 1
+	echo -e "\e[31mERROR :  The url to the youtube video is required"
+	exit 1
 fi
 i=0
 downloadtoken=0
 IFS_BAK=$IFS
 IFS=$'\n'
-tarray=$(yt-dlp_linux -F $1 |grep "audio only" | cut -c1-3,10-18,45-50)
+result=$(yt-dlp_linux -F $1)
+# tarray=$(yt-dlp_linux -F $1 |grep "audio only" | cut -c1-3,10-18,45-50)
+firstrow=$(echo "$result" | grep 'ID')
+tarray=$(echo "$result" | grep 'audio only')
+
+# Find nb of chars in each line, then pad to make a prettier display
+maxcols=$(echo "$firstrow" | awk '{ print length }')
 for line in $tarray; do
- i=$((i+1))
- if [ $(( $i % 2 )) -eq 0 ]; then
- 	echo -e "\e[0m$i. $line"
- else
- 	echo -e "\e[104m$i. $line"
- fi
- downloadtoken=$(echo -e $line | cut -c1-3)
- 	#reset
+	ncols=$(echo "$line" | awk '{ print length }')
+	if [ $((ncols)) -gt $((maxcols)) ]; then
+		maxcols=$((ncols))
+	fi	
+done
+
+# First row
+ncols=$(echo "$firstrow" | awk '{ print length }')
+nspaces=$(( maxcols - ncols))
+pad=$(seq "$nspaces" | awk -v ORS="" '{print " "}')
+echo -e "\e[97m\e[100m   $firstrow""$pad"
+
+for line in $tarray; do
+	ncols=$(echo "$line" | awk '{ print length }')
+	nspaces=$(( maxcols - ncols))
+	pad=$(seq "$nspaces" | awk -v ORS="" '{print " "}')
+	i=$((i+1))
+	if [ $(( $i % 2 )) -eq 0 ]; then
+		echo -e "\e[0m$i. $line""$pad"
+	else
+		echo -e "\e[97m\e[104m$i. $line""$pad"
+	fi
+	downloadtoken=$(echo -e $line | cut -c1-3)
+	 	#reset
 done 
 
 option=${i}
@@ -25,10 +47,10 @@ read option
 i=0
 if [[ $option ]]; then
 	for line in $tarray; do
-	 i=$((i+1))
-	 if [ $(( $i)) -eq $option ]; then
-	 	downloadtoken=$(echo -e $line | cut -c1-3)
-	 fi
+		i=$((i+1))
+		if [ $(( $i)) -eq $option ]; then
+			downloadtoken=$(echo -e $line | cut -c1-3)
+		fi
 	done 
 fi
 
